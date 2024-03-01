@@ -81,43 +81,7 @@ parent2.innerHTML = parent.innerHTML
 </body>
 </html>
 
-<h2 class="wp-block-heading has-text-align-center">央视网《新闻周刊20240224》直播</h2>
-<meta charset="UTF-8">  
-        <title></title> 
-		<script src="js/hls.js"></script><!-- hls.js必须引入，可下载至本地 -->
-        <style type="text/css">  
-           
-        </style>  
-    </head>  
-    <body style="text-align: center;">  
-        <div>  
-	<video id="video" width='auto' height="640" src="" controls autoplay muted></video>
-        </div>  
-    </body>  
-  <script type="text/javascript">
-	//播放地址
-	var hlsUrl="https://hls.cntv.lxdns.com/asp/hls/2000/0303000a/3/default/5ff1f0cd54f144bfb5ada75a0a78acac/2000.m3u8";//需要替换为自己的视频流地址
-	//播放视频流 
-        function loadVideo(){
-	var video = document.getElementById('video');//获取 video 标签
-	if(Hls.isSupported()) {
-	var hls = new Hls();//实例化 Hls 对象
-	hls.loadSource(hlsUrl);//传入路径
-	hls.attachMedia(video);
-	hls.on(Hls.Events.MANIFEST_PARSED,function() {
-		   video.play();//调用播放 API
-		});
-	} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-	          video.src = hlsUrl;
-	          video.addEventListener('loadedmetadata',function() {
-	              video.play();
-	          });
-	      }
-    }
-		
-  //方法调用
-  loadVideo();
-  </script>
+
 
 <div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:25%"></div>
 <h2 class="wp-block-heading has-text-align-center">杨庄高中校园视频公网节目展播（bilibili.com平台）</h2>
