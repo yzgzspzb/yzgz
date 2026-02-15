@@ -1,1142 +1,819 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<meta charset="utf-8">
-<title>杨庄高中视频直播中心公告</title> 
-<style type="text/css">
-          /*样式设置*/
-      body{ margin: auto; }
-      #scroll-box{width: 1920x;height: 80px;background: red;overflow:hidden;}
-          #scroll-box ul{margin: auto}
-          #scroll-box  li{color: #fff}
-</style>
-</head>
-<body style="text-align: center;"> 	
-<!-- 滚动内容部分 -->
- <div id=scroll-box>
-<ul>
-<li>欢迎访问杨庄高中视频直播中心</li>
-<li>公告1： 本网站内所有视频资源，版权归原影视制作单位所有。仅供我校校园内师生免费观看。</li>
-<li>禁止任何人上传第三方平台用作商用，由此引起的版权纠纷由侵权人承担，未经本网或本网权利人授权，</li>
-<li>任何人不得擅自使用(包括但不限于复制、传播、展示、镜像、上载、下载、转载、摘编)或许可他人使用上述视频资源。</li>	
-<li>禁止任何媒体、网站或个人在未经书面授权的情况下转载使用。</li>
-<li>公告2：内网直播频道仅限我校教学楼在线观看，外网无法观看</li>
-<li>公告3： 校园内网开放访问，提供在线观看节目  《 信号测试  》  </li>
-</ul>
-<ul></ul>
-</div>
-<!-- js部分 -->
-<script type="text/javascript">
-var box = document.getElementById('scroll-box')
-var parent = document.getElementsByTagName('ul')[0]
-var parent2 = document.getElementsByTagName('ul')[1]
-parent2.innerHTML = parent.innerHTML
-      /*启动定时器*/
-     var timer = setInterval(autoScrollLine,30)
-    /*单行向上滚动效果*/
-  function autoScrollLine() {
-    /*判断滚动内容是否已经滚完，滚完了则滚动的值重新设置到0
-    否则就每隔30毫秒向上滚动1px*/
-    if(box.scrollTop>=parent.offsetHeight){
-    box.scrollTop=0;
-    }else{
-      box.scrollTop++;
-    }
-      /*判断滚动的距离刚好为一条公告的高度时停掉定时器，
-      隔1s之后重新启动定时器即可实现公告滚动停留效果 */
-      if(box.scrollTop%box.offsetHeight==0){
-    clearInterval(timer)
-    setTimeout(()=>{
-
-        timer = setInterval(autoScrollLine,30)
-    },1000)
-
-    }
-}
-</script>
-</body>
-
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>杨庄高中视频直播中心频道在线直播</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>杨庄高中 · 校园视频直播中心</title>
+    <!-- Video.js 核心样式 (8.x 内置 HLS) -->
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <style>
+        /* 完全保留原有样式，不做删减，仅微调通道计数动态更新 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
-        
+
         body {
-            background: linear-gradient(135deg, #f2f2f4, #fefeff, #f3f3f5);
-            color: #e7eaee;
-            line-height: 1.6;
+            background: #1a2639;
+            font-family: 'Microsoft YaHei', 'Segoe UI', 'PingFang SC', Roboto, Arial, sans-serif;
+            padding: 16px;
             min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 25px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .logo {
             display: flex;
-            align-items: center;
             justify-content: center;
-            margin-bottom: 15px;
+            align-items: center;
         }
-        
-        .logo i {
-            color: #ff6b6b;
-            font-size: 2.8rem;
-            margin-right: 15px;
-        }
-        
-        h1 {
-            color: #fff;
-            font-size: 2.5rem;
-            font-weight: 600;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-        
-        .subtitle {
-            color: #a0d2ff;
-            font-size: 1.1rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        
-        @media (max-width: 1100px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .player-section {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .player-container {
-            position: relative;
+
+        .main-container {
             width: 100%;
-            background: #000;
-            aspect-ratio: 16/9;
+            max-width: 1500px;
+            background: #0f1a2b;
+            border-radius: 36px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.9);
             overflow: hidden;
-        }
-        
-        #video-player {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-        
-        .player-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-            padding: 20px;
-            transition: opacity 0.3s;
-        }
-        
-        .live-badge {
-            display: inline-flex;
-            align-items: center;
-            background: linear-gradient(90deg, #ff416c, #ff4b2b);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(255, 65, 108, 0.4);
-        }
-        
-        .live-badge::before {
-            content: '';
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background-color: white;
-            border-radius: 50%;
-            margin-right: 10px;
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.1); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        
-        .channel-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-        
-        .channel-name {
-            font-size: 1.6rem;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: white;
-        }
-        
-        .program-name {
-            color: #aaa;
-            font-size: 1rem;
-        }
-        
-        .player-controls {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 15px 20px;
-        }
-        
-        .left-controls, .right-controls {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .control-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            cursor: pointer;
-            font-size: 18px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .control-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
-        }
-        
-        .control-btn.active {
-            background: #4a69bd;
-        }
-        
-        .volume-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .volume-slider {
-            width: 80px;
-            -webkit-appearance: none;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-            outline: none;
-        }
-        
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            background: #4a69bd;
-            cursor: pointer;
-        }
-        
-        .channels-section {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            max-height: 800px;
+            gap: 28px;
         }
-        
-        .section-title {
+
+        .top-datetime {
+            color: #aac8ff;
+            font-size: 1.1rem;
+            padding: 0 0 8px 10px;
+            text-align: left;
+            font-family: 'Consolas', 'Monaco', monospace;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .red-ticker {
+            background: #b22222;
+            border-radius: 60px;
+            padding: 12px 25px;
+            border: 2px solid #ff8a8a;
+            box-shadow: inset 0 -3px 0 #6d1a1a, 0 10px 15px rgba(0,0,0,0.3);
+        }
+
+        .ticker-wrapper {
+            height: 160px;
+            overflow: hidden;
+            position: relative;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 500;
+            line-height: 2.2;
+            background: rgba(0,0,0,0.25);
+            border-radius: 40px;
+            padding: 0 20px;
+            mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+        }
+
+        .ticker-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.6s ease-out;
+            will-change: transform;
+        }
+
+        .ticker-list li {
+            height: 56px;
+            line-height: 56px;
+            padding: 0 10px;
+            border-bottom: 1px dashed #ffa0a0;
             color: #fff;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 1.3rem;
+            text-shadow: 2px 2px 3px #4a0000;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 1.1rem;
+        }
+
+        .ticker-list li:last-child {
+            border-bottom: none;
+        }
+
+        .player-row {
+            display: grid;
+            grid-template-columns: 1fr 310px;
+            gap: 24px;
+        }
+
+        .player-area {
+            min-width: 0;
+            width: 100%;
+            background: #0a1422;
+            border-radius: 34px;
+            overflow: hidden;
+            border: 2px solid #2a4070;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .video-js {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            transform: translateZ(0);
+            will-change: transform;
+            min-height: 200px;
+            position: relative;
+            overflow: hidden;
             display: flex;
             align-items: center;
+            justify-content: center;
         }
-        
-        .section-title i {
-            margin-right: 10px;
-            color: #4a69bd;
+
+        .video-js .vjs-tech {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain;
         }
-        
-        .channels-list {
-            flex-grow: 1;
+
+        .video-js video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain !important;
+        }
+
+        .status-bar {
+            background: #10233b;
+            padding: 14px 22px;
+            border-top: 2px solid #2e4a78;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 18px;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .now-playing-label {
+            background: #1f3b60;
+            padding: 8px 28px;
+            border-radius: 40px;
+            border-left: 6px solid #3d8cff;
+            font-weight: 600;
+            max-width: 65%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .live-hint {
+            background: #1f314b;
+            padding: 6px 22px;
+            border-radius: 40px;
+            color: #bbd5ff;
+            border: 1px solid #4c70a0;
+            font-size: 1rem;
+        }
+
+        .channel-rail {
+            background: #12233f;
+            border-radius: 40px;
+            padding: 24px 18px;
+            border: 2px solid #3a5680;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .rail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px 20px 8px;
+            border-bottom: 2px solid #2f4a72;
+            margin-bottom: 20px;
+        }
+
+        .rail-header h3 {
+            color: #ffffff;
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .channel-count {
+            background: #1e3a60;
+            color: #ffffff;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 1rem;
+            border: 1px solid #5a82c0;
+        }
+
+        .channel-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            flex: 1;
+            max-height: 450px;
             overflow-y: auto;
-            padding-right: 5px;
+            scrollbar-width: thin;
+            scrollbar-color: #476aa0 #1a2b44;
         }
-        
+
+        .channel-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .channel-list::-webkit-scrollbar-track {
+            background: #1a2b44;
+            border-radius: 30px;
+        }
+        .channel-list::-webkit-scrollbar-thumb {
+            background: #476aa0;
+            border-radius: 30px;
+        }
+
         .channel-item {
             display: flex;
             align-items: center;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            margin-bottom: 12px;
+            padding: 16px 20px;
+            background: #1e314f;
+            border: 2px solid #3d5a85;
+            border-radius: 60px;
             cursor: pointer;
-            transition: all 0.3s;
-            border: 1px solid transparent;
+            transition: all 0.2s ease;
+            gap: 14px;
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 500;
+            outline: none;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.5);
         }
-        
+
         .channel-item:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: #2a4070;
+            border-color: #7da0ea;
             transform: translateX(5px);
         }
-        
-        .channel-item.active {
-            background: rgba(74, 105, 189, 0.3);
-            border-color: #4a69bd;
-            box-shadow: 0 5px 15px rgba(74, 105, 189, 0.2);
+
+        .channel-item:focus-visible {
+            outline: 3px solid #ffbb33;
+            outline-offset: 2px;
         }
-        
-        .channel-number {
-            width: 35px;
-            height: 35px;
-            background: rgba(255, 255, 255, 0.1);
+
+        .channel-item.active {
+            background: #2a5a9c;
+            border-color: #aac4ff;
+            box-shadow: 0 0 18px #3a7eff;
+        }
+
+        .channel-icon {
+            width: 20px;
+            height: 20px;
+            background: #7aa5ff;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 15px;
             flex-shrink: 0;
         }
-        
-        .channel-item.active .channel-number {
-            background: #4a69bd;
-            color: white;
+        .active .channel-icon {
+            background: #ffdb8e;
         }
-        
-        .channel-details {
-            flex-grow: 1;
-        }
-        
-        .channel-title {
-            font-weight: 600;
-            margin-bottom: 5px;
-            font-size: 1.1rem;
-        }
-        
-        .channel-url {
-            font-size: 0.8rem;
-            color: #888;
+
+        .channel-name {
+            flex: 1;
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 500;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
-        .status-panel {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        
-        .status-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-        
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-        }
-        
-        .indicator-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #ff4b2b;
-        }
-        
-        .indicator-dot.connected {
-            background: #4a69bd;
-            animation: pulse 1.5s infinite;
-        }
-        
-        .status-content {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            padding: 15px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            color: #a0e0a0;
-            height: 120px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-        
-        .loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
+
+        .extra-section {
             display: flex;
             flex-direction: column;
+            gap: 24px;
+            margin-top: 8px;
+        }
+
+        .headline-bar {
+            display: flex;
+            flex-wrap: wrap;
             align-items: center;
-            justify-content: center;
-            z-index: 10;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
+            justify-content: space-between;
+            background: #1b2b44;
+            border-radius: 60px;
+            padding: 16px 28px;
+            border: 1px solid #3f5f8f;
         }
-        
-        .loading-overlay.active {
-            opacity: 1;
-            pointer-events: all;
+        .headline-bar .title-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 20px;
         }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255, 255, 255, 0.1);
-            border-top: 5px solid #4a69bd;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+        .headline-bar h2, .headline-bar h3 {
+            color: white;
+            font-weight: 500;
+            margin: 0;
         }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .channel-count {
-            display: inline-block;
-            background: rgba(74, 105, 189, 0.3);
-            color: #4a69bd;
-            padding: 3px 10px;
-            border-radius: 15px;
-            font-size: 0.9rem;
-            margin-left: 10px;
-        }
-        
-        .play-info {
-            margin-top: 25px;
-            padding-top: 25px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .info-title {
-            color: #aaa;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-        }
-        
-        .info-content {
-            color: #fff;
-            font-size: 1rem;
-            line-height: 1.5;
-        }
-        
-        footer {
+        .headline-bar h2 { font-size: 1.5rem; }
+        .headline-bar h3 { font-size: 1.3rem; }
+        .bili-link-wrapper {
+            flex: 1;
             text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #a0a0c0;
-            font-size: 14px;
+            min-width: 200px;
         }
-        
-        /* 自定义滚动条 */
-        .channels-list::-webkit-scrollbar {
-            width: 6px;
+        .bili-link {
+            display: inline-block;
+            background: #1f3f6f;
+            padding: 8px 30px;
+            border-radius: 40px;
+            color: white;
+            text-decoration: none;
+            font-size: 1.3rem;
+            border: 1px solid #70a0ff;
+            transition: 0.2s;
+            white-space: nowrap;
         }
-        
-        .channels-list::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 3px;
+        .bili-link:hover {
+            background: #2b56a0;
+            transform: scale(1.02);
         }
-        
-        .channels-list::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
+
+        .bilibili-embed {
+            background: #0f1e32;
+            border-radius: 36px;
+            padding: 22px;
+            border: 2px solid #2f5190;
         }
-        
-        .channels-list::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .bilibili-embed h3 {
+            color: #ffd966;
+            margin-bottom: 16px;
+            font-size: 1.8rem;
+            padding-left: 12px;
         }
-        
-        .status-content::-webkit-scrollbar {
-            width: 6px;
+        .bilibili-embed iframe {
+            width: 100%;
+            height: 380px;
+            border-radius: 24px;
+            border: none;
+            background: #000;
         }
-        
-        .status-content::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 3px;
+
+        .cctv-section {
+            background: #112336;
+            border-radius: 40px;
+            padding: 24px 26px;
+            border: 2px solid #3d5e8b;
         }
-        
-        .status-content::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
+        .cctv-section h3 {
+            color: #ffb347;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            padding-left: 10px;
         }
-        
-        /* 响应式调整 */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
+        .cctv-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, auto));
+            gap: 14px;
+        }
+        .cctv-grid dl {
+            margin: 0;
+        }
+        .cctv-grid dt a {
+            display: block;
+            background: #1e3c62;
+            color: white;
+            text-decoration: none;
+            padding: 14px 12px;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 500;
+            border: 1px solid #5680c0;
+            transition: 0.15s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+        }
+        .cctv-grid dt a:hover {
+            background: #2f5090;
+            border-color: #aac9ff;
+            transform: translateY(-2px);
+        }
+
+        .footer-note {
+            text-align: center;
+            color: #9ab8e0;
+            padding-right: 0;
+        }
+        .footer-note span {
+            background: #1f3455;
+            padding: 5px 30px;
+            border-radius: 40px;
+            color: white;
+            font-size: 1rem;
+            display: inline-block;
+        }
+
+        @media (max-width: 700px) {
+            .player-row {
+                grid-template-columns: 1fr;
             }
-            
-            .main-content {
-                gap: 15px;
+            .ticker-wrapper {
+                height: 140px;
             }
-            
-            .player-controls {
-                flex-wrap: wrap;
-                gap: 10px;
+            .ticker-list li {
+                height: 48px;
+                line-height: 48px;
+                font-size: 1rem;
             }
-            
-            .left-controls, .right-controls {
-                flex-wrap: wrap;
+            .now-playing-label {
+                max-width: 100%;
+            }
+            .bilibili-embed iframe {
+                height: 240px;
+            }
+            .cctv-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+            .headline-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .headline-bar .title-group {
+                justify-content: center;
+            }
+            .bili-link-wrapper {
+                margin-top: 8px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">
-                <i class="fas fa-tv"></i>
-                <h1>杨庄高中视频直播中心频道在线直播</h1>
-            </div>
-            <p class="subtitle"> 点击右侧频道列表切换观看 | 基于HLS技术的流畅播放体验</p>
-        </header>
-        
-        <div class="main-content">
-            <div class="player-section">
-                <div class="player-container">
-                    <video id="video-player" crossorigin="anonymous" playsinline></video>
-                    
-                    <div class="loading-overlay" id="loading-overlay">
-                        <div class="spinner"></div>
-                        <div>正在加载电视频道...</div>
-                    </div>
-                    
-                    <div class="player-overlay">
-                        <div class="live-badge">直播中</div>
-                        <div class="channel-info">
-                            <div>
-                                <div class="channel-name" id="channel-name">请选择电视频道</div>
-                                <div class="program-name" id="program-name">正在播放电视节目</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="player-controls">
-                    <div class="left-controls">
-                        <button class="control-btn" id="play-btn" title="播放/暂停">
-                            <i class="fas fa-play"></i>
-                        </button>
-                        <button class="control-btn" id="mute-btn" title="静音">
-                            <i class="fas fa-volume-up"></i>
-                        </button>
-                        <div class="volume-container">
-                            <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.1" value="0.7">
-                        </div>
-                    </div>
-                    <div class="right-controls">
-                        <button class="control-btn" id="fullscreen-btn" title="全屏">
-                            <i class="fas fa-expand"></i>
-                        </button>
-                        <button class="control-btn" id="refresh-btn" title="刷新频道">
-                            <i class="fas fa-redo"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="channels-section">
-                <h2 class="section-title">
-                    <i class="fas fa-list"></i> 电视频道
-                    <span class="channel-count">8个频道</span>
-                </h2>
-                
-                <div class="channels-list" id="channels-list">
-                    <!-- 频道列表将通过JavaScript动态生成 -->
-                </div>
-                
-                <div class="status-panel">
-                    <div class="status-header">
-                        <div class="status-title">播放状态</div>
-                        <div class="status-indicator">
-                            <div class="indicator-dot" id="status-dot"></div>
-                            <span id="status-text">等待播放</span>
-                        </div>
-                    </div>
-                    <div class="status-content" id="status-log">
-电视台直播播放器已就绪
-点击左侧频道列表开始观看
-                    </div>
-                </div>
-                
-                <div class="play-info">
-                    <div class="info-title">播放提示</div>
-                    <div class="info-content">
-                        • 点击频道列表切换不同电视台<br>
-                        • 使用播放控制按钮调节音量和全屏<br>
-                        • 某些频道可能需要较长时间加载<br>
-                        • 杨庄高中视频直播需要在校园教学楼局域网内访问
-                    </div>
-                </div>
-            </div>
+<div class="main-container">
+    <!-- 左上角动态时间 -->
+    <div class="top-datetime" id="currentDateTime"></div>
+
+    <!-- 红色滚动公告栏 -->
+    <div class="red-ticker">
+        <div class="ticker-wrapper" id="tickerWrapper">
+            <ul class="ticker-list" id="tickerList">
+                <li>欢迎访问杨庄高中视频直播中心</li>
+                <li>公告1： 本网站内所有视频资源，版权归原影视制作单位所有。仅供我校校园内师生免费观看。</li>
+                <li>禁止任何人上传第三方平台用作商用，由此引起的版权纠纷由侵权人承担，未经本网或本网权利人授权，</li>
+                <li>任何人不得擅自使用(包括但不限于复制、传播、展示、镜像、上载、下载、转载、摘编)或许可他人使用上述视频资源。</li>
+                <li>禁止任何媒体、网站或个人在未经书面授权的情况下转载使用。</li>
+                <li>公告2：内网直播频道仅限我校教学楼在线观看，外网无法观看</li>
+                <li>公告3： 校园内网开放访问，提供在线观看节目  《 信号测试  》</li>
+            </ul>
         </div>
-        
     </div>
 
-    <script>
-        // 电视频道数据
-        const channels = [
-           {
-                id: 1,
-                name: "杨庄高中校园视频",
-                url: "http://192.168.110.88:8088/livelan/stream.m3u8",
-                description: "杨庄高中校园视频在线直播",
-                program: "校园活动与教学视频",
-                isLocal: true
-                
-            },
-            {
-                id: 2,
-                name: "遂平一套",
-                url: "http://tvpull.dxhmt.cn:9081/tv/11728-1.m3u8",
-                description: "遂平县第一套节目",
-                program: "遂平本地电视节目"
-                    
-            },
-            {
-                id: 3,
-                name: "上蔡综合",
-                url: "http://tvpull.dxhmt.cn:9081/tv/11722-1.m3u8",
-                description: "上蔡县综合电视频道",
-                program: "本地资讯与娱乐节目"
-            },
-            {
-                id: 4,
-                name: "平舆综合",
-                url: "http://tvpull.dxhmt.cn:9081/tv/11723-1.m3u8",
-                description: "平舆县综合电视频道",
-                program: "地方新闻与专题节目"
-            },
-            {
-                id: 5,
-                name: "正阳一套",
-                url: "http://tvpull.dxhmt.cn:9081/tv/11724-1.m3u8",
-                description: "正阳县第一套节目",
-                program: "正阳本地电视节目"
-            },
-            {
-                id: 6,
-                name: "确山新闻综合",
-                url: "http://tvpull.dxhmt.cn:9081/tv/11725-1.m3u8",
-                description: "确山县新闻综合频道",
-                program: "新闻与综合节目"
-            },
-            {
-                id: 7,
-                name: "泌阳新闻综合",
-                url: "http://tvpull.dxhmt.cn:9081/tv/11726-1.m3u8",
-                description: "泌阳县新闻综合频道",
-                program: "新闻播报与专题报道"
-            },
-            {
-                id: 8,
-                  name: "新蔡综合",
-                url: "http://tvpull.dxhmt.cn:9081/tv/11729-1.m3u8",
-                description: "新蔡县综合电视频道",
-                program: "综合电视节目"     
-            },
-         
-        ];
-
-        // DOM元素
-        const videoElement = document.getElementById('video-player');
-        const channelsList = document.getElementById('channels-list');
-        const playBtn = document.getElementById('play-btn');
-        const muteBtn = document.getElementById('mute-btn');
-        const volumeSlider = document.getElementById('volume-slider');
-        const fullscreenBtn = document.getElementById('fullscreen-btn');
-        const refreshBtn = document.getElementById('refresh-btn');
-        const statusDot = document.getElementById('status-dot');
-        const statusText = document.getElementById('status-text');
-        const statusLog = document.getElementById('status-log');
-        const channelName = document.getElementById('channel-name');
-        const programName = document.getElementById('program-name');
-        const loadingOverlay = document.getElementById('loading-overlay');
-
-        // HLS实例和状态变量
-        let hls = null;
-        let isPlaying = false;
-        let currentChannel = null;
-        let logEntries = [];
-        let retryCount = 0;
-        const maxRetries = 3;
-
-        // 初始化
-        function init() {
-            // 设置音量
-            videoElement.volume = volumeSlider.value;
-            
-            // 更新状态显示
-            updateStatus('准备就绪', 'ready');
-            addLog('电视台直播播放器初始化完成');
-            addLog(`已加载 ${channels.length} 个电视频道`);
-            
-            // 渲染频道列表
-            renderChannelsList();
-            
-            // 默认选择第一个频道
-            setTimeout(() => {
-                selectChannel(channels[0]);
-            }, 1000);
-        }
-
-        // 渲染频道列表
-        function renderChannelsList() {
-            channelsList.innerHTML = '';
-            
-            channels.forEach(channel => {
-                const channelItem = document.createElement('div');
-                channelItem.className = 'channel-item';
-                channelItem.dataset.id = channel.id;
-                
-                // 处理URL显示
-                let displayUrl = channel.url;
-                if (displayUrl.length > 40) {
-                    displayUrl = displayUrl.substring(0, 40) + '...';
-                }
-                
-                channelItem.innerHTML = `
-                    <div class="channel-number">${channel.id}</div>
-                    <div class="channel-details">
-                        <div class="channel-title">${channel.name}</div>
-                        <div class="channel-url">${displayUrl}</div>
-                    </div>
-                    ${channel.isLocal ? '<i class="fas fa-network-wired" style="color: #ffa502; margin-left: 10px;" title="本地网络频道"></i>' : ''}
-                `;
-                
-                channelItem.addEventListener('click', () => {
-                    selectChannel(channel);
-                });
-                
-                channelsList.appendChild(channelItem);
-            });
-        }
-
-        // 选择频道
-        function selectChannel(channel) {
-            // 更新UI选中状态
-            document.querySelectorAll('.channel-item').forEach(item => {
-                item.classList.remove('active');
-                if (parseInt(item.dataset.id) === channel.id) {
-                    item.classList.add('active');
-                }
-            });
-            
-            // 更新当前频道
-            currentChannel = channel;
-            
-            // 更新播放器信息
-            channelName.textContent = channel.name;
-            programName.textContent = channel.program;
-            
-            // 加载频道流
-            loadChannel(channel);
-        }
-
-        // 加载频道
-        function loadChannel(channel) {
-            addLog(`正在切换到: ${channel.name}`);
-            addLog(`频道描述: ${channel.description}`);
-            
-            if (channel.isLocal) {
-                addLog('提示: 这是本地网络频道，需要相应网络访问权限', 'warning');
-            }
-            
-            // 停止现有播放
-            stopPlayback();
-            
-            // 更新状态
-            updateStatus('加载中...', 'loading');
-            showLoading(true);
-            
-            // 检查HLS支持
-            if (Hls.isSupported()) {
-                addLog('使用HLS.js播放器加载频道流...');
-                
-                // 创建HLS实例
-                hls = new Hls({
-                    enableWorker: true,
-                    lowLatencyMode: true,
-                    backBufferLength: 90,
-                    maxBufferSize: 30 * 1000 * 1000,
-                    maxBufferLength: 30,
-                    autoStartLoad: true,
-                    startPosition: 0
-                });
-                
-                // 加载视频源
-                hls.loadSource(channel.url);
-                hls.attachMedia(videoElement);
-                
-                // 监听事件
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    addLog('频道流加载成功，准备播放');
-                    retryCount = 0; // 重置重试计数
-                    playChannel();
-                });
-                
-                hls.on(Hls.Events.ERROR, (event, data) => {
-                    if (data.fatal) {
-                        addLog(`播放错误: ${data.type} - ${data.details}`, 'error');
-                        
-                        switch(data.type) {
-                            case Hls.ErrorTypes.NETWORK_ERROR:
-                                addLog('网络错误，尝试重新连接...', 'warning');
-                                retryCount++;
-                                if (retryCount <= maxRetries) {
-                                    setTimeout(() => hls.startLoad(), 1000 * retryCount);
-                                    addLog(`第 ${retryCount} 次重试...`);
-                                } else {
-                                    addLog('重试次数超限，请检查网络或频道状态', 'error');
-                                    updateStatus('连接失败', 'error');
-                                    showLoading(false);
-                                }
-                                break;
-                            case Hls.ErrorTypes.MEDIA_ERROR:
-                                addLog('媒体错误，尝试恢复...', 'warning');
-                                hls.recoverMediaError();
-                                break;
-                            default:
-                                addLog('无法恢复的错误，停止播放', 'error');
-                                stopPlayback();
-                                break;
-                        }
-                    }
-                });
-                
-                hls.on(Hls.Events.FRAG_LOADED, () => {
-                    // 隐藏加载状态
-                    showLoading(false);
-                });
-            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                // Safari原生HLS支持
-                addLog('使用浏览器原生HLS支持');
-                videoElement.src = channel.url;
-                playChannel();
-            } else {
-                addLog('错误：您的浏览器不支持HLS播放', 'error');
-                updateStatus('浏览器不支持', 'error');
-                showLoading(false);
-            }
-        }
-
-        // 播放频道
-        function playChannel() {
-            videoElement.play()
-                .then(() => {
-                    isPlaying = true;
-                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    updateStatus('直播中', 'playing');
-                    addLog(`${currentChannel.name} 开始播放`);
-                    
-                    // 隐藏加载状态
-                    setTimeout(() => showLoading(false), 500);
-                })
-                .catch(error => {
-                    addLog(`播放失败: ${error.message}`, 'error');
-                    
-                    // 如果是自动播放被阻止，手动提示用户
-                    if (error.name === 'NotAllowedError') {
-                        addLog('提示: 浏览器阻止了自动播放，请点击播放按钮', 'warning');
-                        updateStatus('点击播放按钮', 'ready');
-                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                        isPlaying = false;
-                    } else {
-                        updateStatus('播放失败', 'error');
-                    }
-                    
-                    showLoading(false);
-                });
-        }
-
-        // 停止播放
-        function stopPlayback() {
-            if (hls) {
-                hls.destroy();
-                hls = null;
-            }
-            
-            videoElement.pause();
-            videoElement.src = '';
-            videoElement.currentTime = 0;
-            isPlaying = false;
-            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            
-            retryCount = 0;
-        }
-
-        // 刷新当前频道
-        function refreshChannel() {
-            if (currentChannel) {
-                addLog(`刷新频道: ${currentChannel.name}`);
-                loadChannel(currentChannel);
-            } else {
-                addLog('请先选择一个频道', 'warning');
-            }
-        }
-
-        // 更新状态指示器
-        function updateStatus(message, status) {
-            statusText.textContent = message;
-            
-            // 移除所有状态类
-            statusDot.classList.remove('connected');
-            
-            // 根据状态设置颜色
-            if (status === 'playing') {
-                statusDot.classList.add('connected');
-                statusDot.style.background = '#4a69bd';
-            } else if (status === 'loading') {
-                statusDot.style.background = '#FFA500';
-            } else if (status === 'error') {
-                statusDot.style.background = '#FF416C';
-            } else if (status === 'ready') {
-                statusDot.style.background = '#4a69bd';
-            } else {
-                statusDot.style.background = '#888';
-            }
-        }
-
-        // 添加日志条目
-        function addLog(message, type = 'info') {
-            const timestamp = new Date().toLocaleTimeString();
-            const typeIcon = type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️';
-            const logEntry = `[${timestamp}] ${typeIcon} ${message}`;
-            
-            logEntries.push(logEntry);
-            if (logEntries.length > 6) {
-                logEntries.shift();
-            }
-            
-            statusLog.textContent = logEntries.join('\n');
-            statusLog.scrollTop = statusLog.scrollHeight;
-        }
-
-        // 显示加载状态
-        function showLoading(show) {
-            if (show) {
-                loadingOverlay.classList.add('active');
-            } else {
-                loadingOverlay.classList.remove('active');
-            }
-        }
-
-        // 播放/暂停控制
-        playBtn.addEventListener('click', () => {
-            if (!videoElement.src) {
-                addLog('请先选择一个频道', 'warning');
-                return;
-            }
-            
-            if (isPlaying) {
-                videoElement.pause();
-                playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                isPlaying = false;
-                addLog('播放暂停');
-            } else {
-                videoElement.play()
-                    .then(() => {
-                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                        isPlaying = true;
-                        addLog('继续播放');
-                    })
-                    .catch(error => {
-                        addLog(`播放失败: ${error.message}`, 'error');
-                    });
-            }
-        });
-
-        // 静音控制
-        muteBtn.addEventListener('click', () => {
-            videoElement.muted = !videoElement.muted;
-            muteBtn.innerHTML = videoElement.muted ? 
-                '<i class="fas fa-volume-mute"></i>' : 
-                '<i class="fas fa-volume-up"></i>';
-            
-            addLog(videoElement.muted ? '已静音' : '取消静音');
-        });
-
-        // 音量控制
-        volumeSlider.addEventListener('input', () => {
-            videoElement.volume = volumeSlider.value;
-        });
-
-        // 全屏控制
-        fullscreenBtn.addEventListener('click', () => {
-            if (!document.fullscreenElement) {
-                const playerContainer = document.querySelector('.player-container');
-                if (playerContainer.requestFullscreen) {
-                    playerContainer.requestFullscreen();
-                } else if (playerContainer.webkitRequestFullscreen) {
-                    playerContainer.webkitRequestFullscreen();
-                }
-                addLog('进入全屏模式');
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                }
-                addLog('退出全屏模式');
-            }
-        });
-
-        // 刷新按钮
-        refreshBtn.addEventListener('click', refreshChannel);
-
-        // 视频播放状态监听
-        videoElement.addEventListener('play', () => {
-            isPlaying = true;
-            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-        });
-
-        videoElement.addEventListener('pause', () => {
-            isPlaying = false;
-            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-        });
-
-        // 视频加载开始
-        videoElement.addEventListener('loadstart', () => {
-            showLoading(true);
-        });
-
-        // 视频可以播放
-        videoElement.addEventListener('canplay', () => {
-            showLoading(false);
-        });
-
-        // 视频错误处理
-        videoElement.addEventListener('error', () => {
-            addLog('视频播放错误：无法加载频道流', 'error');
-            updateStatus('播放错误', 'error');
-            showLoading(false);
-        });
-
-        // 键盘快捷键支持
-        document.addEventListener('keydown', (e) => {
-            // 空格键切换播放/暂停
-            if (e.code === 'Space' && currentChannel) {
-                e.preventDefault();
-                playBtn.click();
-            }
-            
-            // 左右箭头切换频道
-            if (e.code === 'ArrowRight' || e.code === 'ArrowDown') {
-                e.preventDefault();
-                if (currentChannel) {
-                    const nextIndex = channels.findIndex(c => c.id === currentChannel.id) + 1;
-                    if (nextIndex < channels.length) {
-                        selectChannel(channels[nextIndex]);
-                    }
-                }
-            }
-            
-            if (e.code === 'ArrowLeft' || e.code === 'ArrowUp') {
-                e.preventDefault();
-                if (currentChannel) {
-                    const prevIndex = channels.findIndex(c => c.id === currentChannel.id) - 1;
-                    if (prevIndex >= 0) {
-                        selectChannel(channels[prevIndex]);
-                    }
-                }
-            }
-            
-            // F键切换全屏
-            if (e.code === 'KeyF') {
-                e.preventDefault();
-                fullscreenBtn.click();
-            }
-            
-            // M键切换静音
-            if (e.code === 'KeyM') {
-                e.preventDefault();
-                muteBtn.click();
-            }
-            
-            // R键刷新频道
-            if (e.code === 'KeyR') {
-                e.preventDefault();
-                refreshBtn.click();
-            }
-        });
-
-        // 初始化应用
-        init();
-    </script>
-</body>
-
-    
-<h2 class="wp-block-heading has-text-align-center">上面播放窗口是校园内网直播,《周末影院》仅限我校教学楼观看</h2>
-<section id="featured-channels">
-            <h3 class="text-xl font-semibold text-neutral-dark mb-4">杨庄高中在线电视台直播</h3>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                <div class="card-hover bg-white p-4 rounded-xl shadow-sm border border-neutral flex flex-col items-center justify-center text-center transition-all duration-300 hover:shadow-md hover:-translate-y-1">
-                    <span class="text-primary font-medium mb-2">
-					</span>
-                    <a href="http://live.bilibili.com/25494416" target="_blank" class="text-sm text-neutral-dark/50 hover:text-primary">点击进入</a>
+    <!-- 播放器 + 右侧列表 (grid布局强制并排) -->
+    <div class="player-row">
+        <div class="player-area">
+            <video id="myVideo" class="video-js vjs-big-play-centered" controls preload="auto"
+                   playsinline webkit-playsinline x5-playsinline
+                   crossorigin="anonymous"
+                   width="1280" height="720"
+                   poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1280' height='720' viewBox='0 0 1280 720'%3E%3Crect width='1280' height='720' fill='%23000'/%3E%3C/svg%3E">
+                <source src="http://192.168.110.88:8088/livelan/stream.m3u8" type="application/x-mpegURL">
+                <p class="vjs-no-js">您的浏览器不支持视频播放，请升级或更换浏览器。</p>
+            </video>
+            <div class="status-bar" id="statusBar">
+                <div class="now-playing-label" id="nowPlaying">⏸️ 未播放</div>
+                <div class="live-hint" id="liveHint">🎬 点击频道开始观看</div>
             </div>
+        </div>
 
-	<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:25%"></div>
-		<h2 class="wp-block-heading has-text-align-center">杨庄高中校园视频公网节目直播（B站） </h2>
-		<p><iframe style="width:1280px;height:720px;" src="https://www.bilibili.com/blackboard/live/live-activity-player.html?cid=25494416&amp;quality=0" frameborder="no" framespacing="0" scrolling="no" allow="autoplay; encrypted-media" allowfullscreen="true"></iframe></p>
-	</div>
+        <div class="channel-rail">
+            <div class="rail-header">
+                <h3>📺 电视列表</h3>
+                <span class="channel-count">9个台</span>  <!-- 稍后动态更新 -->
+            </div>
+            <ul class="channel-list" id="channelList"></ul>
+            <div class="footer-note" style="margin-top: 16px;">
+                <span>📡 校园内网直连 </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 附加内容 -->
+    <div class="extra-section">
+        <div class="headline-bar">
+            <div class="title-group">
+                <h2>📡 上面播放窗口是校园内网直播 · 《周末影院》仅限校园教学楼观看</h2>
+                <h3>✨ 杨庄高中视频展播直播（B站） ✨</h3>
+            </div>
+            <div class="bili-link-wrapper">
+                <a href="https://space.bilibili.com/507501409" target="_blank" class="bili-link">点击进入B站空间</a>
+            </div>
+        </div>
+
+        <div class="bilibili-embed">
+            <h3>🎥 杨庄高中校园视频公网节目（B站）</h3>
+            <iframe src="https://www.bilibili.com/blackboard/live/live-activity-player.html?cid=25494416&quality=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+
+        <div class="cctv-section">
+            <h3>📺 CCTV央视官方直播（点击跳转）</h3>
+            <div class="cctv-grid" id="cctv-quick">
+                <dl><dt><a href="https://tv.cctv.com/live/cctv1/" target="_blank">CCTV-1 综合</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctv2/" target="_blank">CCTV-2 财经</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctv3/" target="_blank">CCTV-3 综艺</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctv4/" target="_blank">CCTV-4 中文</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctv5/" target="_blank">CCTV-5 体育</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctv6/" target="_blank">CCTV-6 电影</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctv7/" target="_blank">CCTV-7 军事</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctv8/" target="_blank">CCTV-8 电视剧</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctvjilu/" target="_blank">CCTV-9 纪录</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctv10/" target="_blank">CCTV-10 科教</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctv11/" target="_blank">CCTV-11 戏曲</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctv12/" target="_blank">CCTV-12 社会与法</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctv13/" target="_blank">CCTV-13 新闻</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctvchild/" target="_blank">CCTV-14 少儿</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctv15/" target="_blank">CCTV-15 音乐</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctv16/" target="_blank">CCTV-16 奥林匹克</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctv17/" target="_blank">CCTV-17 农业农村</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctveurope/index.shtml" target="_blank">CCTV-4 中文国际（欧）</a></dt></dl>
+                <dl><dt><a href="https://tv.cctv.com/live/cctvamerica/" target="_blank">CCTV-4 中文国际（美）</a></dt></dl>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            <span>杨庄高中校园网络中心 · 仅限校园内部使用</span>
+        </div>
+    </div>
+</div>
+
+<!-- 引入 video.js 库 -->
+<script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+<script>
+(function() {
+    // ----- 八个原有频道 + 第九个固定频道 (郑州教育台，不再支持自定义) -----
+    const channels = [
+        { name: '杨庄高中校园视频', url: 'http://192.168.110.88:8088/livelan/stream.m3u8' },
+        { name: '郑州教育台', url: 'http://livezzutv.chinamcache.com/zb02/zb02.m3u8' },
+        { name: '平舆综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11723-1.m3u8' },
+        { name: '登封综合', url: 'http://tvpull.dxhmt.cn:9081/tv/10185-1.m3u8' },
+        { name: '确山新闻综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11725-1.m3u8' },
+        { name: '泌阳新闻综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11726-1.m3u8' },
+        { name: '遂平一套', url: 'http://tvpull.dxhmt.cn:9081/tv/11728-1.m3u8' },
+        { name: '新蔡综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11729-1.m3u8' },
+        { name: '上蔡综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11722-1.m3u8' },   
+    ];
+
+    // 不再读取localStorage，完全固定第九台链接
+
+    let activeIndex = 0;
+    let retryCount = 0;
+    const MAX_RETRY = 3;
+
+    const player = videojs('myVideo', {
+        controls: true,
+        preload: 'auto',
+        autoplay: false,
+        techOrder: ['html5'],
+        html5: {
+            hls: {
+                overrideNative: false,
+                enableLowInitialPlaylist: true,
+                smoothQualityChange: true
+            }
+        },
+        liveui: false,
+        playbackRates: [0.5, 1, 1.5, 2]
+    });
+
+    const channelListEl = document.getElementById('channelList');
+    const nowPlayingEl = document.getElementById('nowPlaying');
+    const liveHintEl = document.getElementById('liveHint');
+    const channelCountSpan = document.querySelector('.channel-count');
+
+    function updateStatusText(text, hint) {
+        nowPlayingEl.innerText = text;
+        if (hint !== undefined) liveHintEl.innerText = hint;
+    }
+
+    // 播放器事件监听
+    player.on('waiting', () => {
+        updateStatusText(nowPlayingEl.innerText, '⏳ 缓冲中...');
+    });
+    player.on('playing', () => {
+        retryCount = 0;
+        const name = channels[activeIndex]?.name || '未知频道';
+        updateStatusText(`📡 正在播放：${name}`, '🎬 流畅播放');
+    });
+    player.on('error', () => {
+        const name = channels[activeIndex]?.name || '未知频道';
+        updateStatusText(`⚠️ 播放错误: ${name}`, '❌ 链接失败');
+        if (retryCount < MAX_RETRY) {
+            retryCount++;
+            liveHintEl.innerText = `⏳ 第 ${retryCount} 次重试...`;
+            setTimeout(() => {
+                player.src({ type: 'application/x-mpegURL', src: channels[activeIndex].url });
+                player.load();
+                player.play().catch(() => {});
+            }, 1500);
+        } else {
+            liveHintEl.innerText = '❌ 多次重试失败，请手动切换频道';
+        }
+    });
+    player.on('pause', () => {
+        liveHintEl.innerText = '⏸️ 已暂停';
+    });
+
+    // 渲染频道列表 (所有频道统一风格，第九台不再有双击设置)
+    function renderChannelList() {
+        channelListEl.innerHTML = '';
+        channels.forEach((ch, idx) => {
+            const li = document.createElement('li');
+            li.className = 'channel-item';
+            if (idx === activeIndex) li.classList.add('active');
+            li.setAttribute('data-index', idx);
+            li.setAttribute('role', 'button');
+            li.setAttribute('tabindex', '0');
+            li.setAttribute('aria-label', `播放 ${ch.name}`);
+
+            const iconSpan = document.createElement('span');
+            iconSpan.className = 'channel-icon';
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'channel-name';
+            // 所有频道直接显示名称，第九台固定为"郑州教育台"，无特殊标记
+            nameSpan.textContent = ch.name;
+
+            li.appendChild(iconSpan);
+            li.appendChild(nameSpan);
+
+            // 单击切换频道 (所有频道一视同仁，无自定义判断)
+            li.addEventListener('click', (e) => {
+                e.preventDefault();
+                const index = parseInt(li.getAttribute('data-index'), 10);
+                switchChannel(index);
+            });
+
+            // 键盘支持 (Enter/Space)
+            li.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const index = parseInt(li.getAttribute('data-index'), 10);
+                    switchChannel(index);
+                }
+            });
+
+            channelListEl.appendChild(li);
+        });
+
+        // 更新频道计数
+        if (channelCountSpan) {
+            channelCountSpan.textContent = channels.length + '个台';
+        }
+    }
+
+    // 切换频道核心逻辑 (所有频道均有url，但保留空值防御)
+    function switchChannel(newIndex) {
+        if (newIndex < 0 || newIndex >= channels.length) return;
+        const targetChannel = channels[newIndex];
+
+        // 更新激活索引
+        activeIndex = newIndex;
+        retryCount = 0;
+
+        // 更新所有项的active类
+        const allItems = document.querySelectorAll('.channel-item');
+        allItems.forEach((item, i) => {
+            if (i === activeIndex) item.classList.add('active');
+            else item.classList.remove('active');
+        });
+
+        // 防御：如果某个频道意外没有URL（理论上不会），给出提示
+        if (!targetChannel.url) {
+            player.pause();
+            player.src(''); // 清空视频源
+            updateStatusText(`⏸️ ${targetChannel.name} 未配置链接`, '⚙️ 请联系管理员');
+            return;
+        }
+
+        // 正常播放
+        updateStatusText(`🔄 切换至 ${targetChannel.name} ...`, '⏳ 加载中');
+        player.src({ type: 'application/x-mpegURL', src: targetChannel.url });
+        player.load();
+        player.play().catch(() => {
+            liveHintEl.innerText = '▶️ 请点击播放按钮';
+        });
+
+        player.one('play', () => {
+            updateStatusText(`📡 正在播放：${targetChannel.name}`, '🎬 流畅播放');
+        });
+        player.one('error', () => {
+            updateStatusText(`⚠️ 播放失败: ${targetChannel.name}`, '❌ 链接失败');
+        });
+    }
+
+    // 初始化渲染
+    renderChannelList();
+
+    // 默认激活第一个频道并播放
+    activeIndex = 0;
+    document.querySelectorAll('.channel-item')[0]?.classList.add('active');
+    updateStatusText(`📡 正在播放：${channels[0].name}`, '🎬 初始加载');
+    switchChannel(0);  // 通过switchChannel统一播放第一项
+
+    // 自动播放被阻止提示
+    setTimeout(() => {
+        if (player.paused() && !player.hasStarted_) {
+            liveHintEl.innerText = '▶️ 请点击右侧频道或播放按钮';
+        }
+    }, 1200);
+
+    // ---------- 无缝滚动公告优化 (保持不变) ----------
+    (function initTicker() {
+        const tickerList = document.getElementById('tickerList');
+        const tickerWrapper = document.getElementById('tickerWrapper');
+        if (!tickerList || !tickerWrapper) return;
+
+        const originalItems = Array.from(tickerList.children).map(li => li.innerHTML);
+        tickerList.innerHTML = '';
+        const doubleItems = [...originalItems, ...originalItems];
+        doubleItems.forEach(html => {
+            const li = document.createElement('li');
+            li.innerHTML = html;
+            tickerList.appendChild(li);
+        });
+
+        let itemHeight = 56;
+        const firstLi = tickerList.children[0];
+        if (firstLi) {
+            itemHeight = firstLi.offsetHeight;
+        }
+
+        const originalCount = originalItems.length;
+        const totalMove = itemHeight * originalCount;
+
+        let scrollInterval;
+
+        function moveStep() {
+            const transform = tickerList.style.transform;
+            let currentY = 0;
+            if (transform && transform.includes('translateY')) {
+                const match = transform.match(/translateY\(([-\d.]+)px\)/);
+                if (match) currentY = parseFloat(match[1]);
+            }
+
+            let newY = currentY - itemHeight;
+
+            if (Math.abs(newY) >= totalMove - 0.1) {
+                tickerList.style.transition = 'none';
+                tickerList.style.transform = 'translateY(0)';
+                tickerList.offsetHeight;
+                tickerList.style.transition = 'transform 0.6s ease-out';
+                newY = -itemHeight;
+            }
+
+            tickerList.style.transform = `translateY(${newY}px)`;
+        }
+
+        scrollInterval = setInterval(moveStep, 3000);
+
+        window.addEventListener('beforeunload', () => {
+            if (scrollInterval) clearInterval(scrollInterval);
+        });
+
+        window.addEventListener('resize', () => {
+            if (tickerList.children[0]) {
+                const newHeight = tickerList.children[0].offsetHeight;
+                if (newHeight !== itemHeight) {
+                    itemHeight = newHeight;
+                    tickerList.style.transition = 'none';
+                    tickerList.style.transform = 'translateY(0)';
+                    tickerList.offsetHeight;
+                    tickerList.style.transition = 'transform 0.6s ease-out';
+                }
+            }
+        });
+    })();
+
+    // 左上角动态时间
+    function updateDateTime() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hour = String(now.getHours()).padStart(2, '0');
+        const minute = String(now.getMinutes()).padStart(2, '0');
+        const dateTimeStr = `${year}年${month}月${day}日 ${hour}时${minute}分`;
+        const el = document.getElementById('currentDateTime');
+        if (el) el.textContent = dateTimeStr;
+    }
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+})();
+</script>
+</body>
 </html>
