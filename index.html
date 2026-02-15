@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>杨庄高中 · 校园视频直播中心</title>
+    <title>杨庄高中 · 校园视频直播中心（增强版）</title>
     <!-- Video.js 核心样式 (8.x 内置 HLS) -->
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <style>
@@ -493,12 +494,12 @@
 
         <div class="channel-rail">
             <div class="rail-header">
-                <h3>📺 电视列表</h3>
-                <span class="channel-count">9个台</span>  <!-- 稍后动态更新 -->
+                <h3>📺 校园电视列表</h3>
+                <span class="channel-count">10个台</span>  <!-- 动态更新为10个台 -->
             </div>
             <ul class="channel-list" id="channelList"></ul>
             <div class="footer-note" style="margin-top: 16px;">
-                <span>📡 校园内网直连 </span>
+                <span>📡 校园内网直连 · 第1台为校园视频展播 </span>
             </div>
         </div>
     </div>
@@ -507,7 +508,7 @@
     <div class="extra-section">
         <div class="headline-bar">
             <div class="title-group">
-                <h2>📡 上面播放窗口是校园内网直播 · 《周末影院》仅限校园教学楼观看</h2>
+                <h2>📡 上面播放窗口 《周末影院》仅限校园教学楼观看</h2>
                 <h3>✨ 杨庄高中视频展播直播（B站） ✨</h3>
             </div>
             <div class="bili-link-wrapper">
@@ -555,20 +556,21 @@
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 <script>
 (function() {
-    // ----- 八个原有频道 + 第九个固定频道 (郑州教育台，http://livezzutv.chinamcache.com/zb02/zb02.m3u8不再支持自定义) -----
+    // ----- 频道列表：本地MP4放在第一位，其余9个依次后移 -----
     const channels = [
-        { name: '杨庄高中校园视频', url: 'http://192.168.110.88:8088/livelan/stream.m3u8' },
-        { name: '郑州教育台', url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8' },
+        // 第一位：局域网MP4点播，固定加载同目录下的 local.mp4
+        { name: '📁 校园本地视频 (local.mp4)', url: './local.mp4', localMP4: true },
+        // 原9个频道依次往下排
+        { name: '杨庄高中《周末影院》', url: 'http://192.168.6.200:8088/livelan/stream.m3u8' },
+        { name: '郑州教育台', url: 'http://livezzutv.chinamcache.com/zb02/zb02.m3u8' },
         { name: '平舆综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11723-1.m3u8' },
         { name: '登封综合', url: 'http://tvpull.dxhmt.cn:9081/tv/10185-1.m3u8' },
         { name: '确山新闻综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11725-1.m3u8' },
         { name: '泌阳新闻综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11726-1.m3u8' },
         { name: '遂平一套', url: 'http://tvpull.dxhmt.cn:9081/tv/11728-1.m3u8' },
         { name: '新蔡综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11729-1.m3u8' },
-        { name: '上蔡综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11722-1.m3u8' },   
+        { name: '上蔡综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11722-1.m3u8' }
     ];
-
-    // 不再读取localStorage，完全固定第九台链接
 
     let activeIndex = 0;
     let retryCount = 0;
@@ -595,6 +597,7 @@
     const liveHintEl = document.getElementById('liveHint');
     const channelCountSpan = document.querySelector('.channel-count');
 
+    // 辅助函数：更新状态栏文字
     function updateStatusText(text, hint) {
         nowPlayingEl.innerText = text;
         if (hint !== undefined) liveHintEl.innerText = hint;
@@ -606,29 +609,50 @@
     });
     player.on('playing', () => {
         retryCount = 0;
-        const name = channels[activeIndex]?.name || '未知频道';
-        updateStatusText(`📡 正在播放：${name}`, '🎬 流畅播放');
+        const ch = channels[activeIndex];
+        if (ch && ch.localMP4) {
+            updateStatusText(`📡 正在播放：本地视频 (local.mp4)`, '🎬 流畅播放');
+        } else {
+            const name = ch?.name || '未知频道';
+            updateStatusText(`📡 正在播放：${name}`, '🎬 流畅播放');
+        }
     });
     player.on('error', () => {
-        const name = channels[activeIndex]?.name || '未知频道';
-        updateStatusText(`⚠️ 播放错误: ${name}`, '❌ 链接失败');
-        if (retryCount < MAX_RETRY) {
-            retryCount++;
-            liveHintEl.innerText = `⏳ 第 ${retryCount} 次重试...`;
-            setTimeout(() => {
-                player.src({ type: 'application/x-mpegURL', src: channels[activeIndex].url });
-                player.load();
-                player.play().catch(() => {});
-            }, 1500);
+        const ch = channels[activeIndex];
+        const name = ch?.name || '未知频道';
+        if (ch && ch.localMP4) {
+            // 对于MP4点播，错误通常意味着文件不存在或路径错误
+            updateStatusText(`⚠️ 播放错误: 本地视频文件不存在`, '❌ 请检查服务器上是否有 local.mp4');
+            liveHintEl.innerText = '❌ 文件不存在';
         } else {
-            liveHintEl.innerText = '❌ 多次重试失败，请手动切换频道';
+            updateStatusText(`⚠️ 播放错误: ${name}`, '❌ 链接失败');
+            if (retryCount < MAX_RETRY) {
+                retryCount++;
+                liveHintEl.innerText = `⏳ 第 ${retryCount} 次重试...`;
+                setTimeout(() => {
+                    player.src({ type: 'application/x-mpegURL', src: channels[activeIndex].url });
+                    player.load();
+                    player.play().catch(() => {});
+                }, 1500);
+            } else {
+                liveHintEl.innerText = '❌ 多次重试失败，请手动切换频道';
+            }
         }
     });
     player.on('pause', () => {
         liveHintEl.innerText = '⏸️ 已暂停';
     });
 
-    // 渲染频道列表 (所有频道统一风格，第九台不再有双击设置)
+    // 设置当前激活频道的样式 (根据索引)
+    function setActiveChannelClass(index) {
+        const allItems = document.querySelectorAll('.channel-item');
+        allItems.forEach((item, i) => {
+            if (i === index) item.classList.add('active');
+            else item.classList.remove('active');
+        });
+    }
+
+    // 渲染频道列表
     function renderChannelList() {
         channelListEl.innerHTML = '';
         channels.forEach((ch, idx) => {
@@ -645,20 +669,17 @@
 
             const nameSpan = document.createElement('span');
             nameSpan.className = 'channel-name';
-            // 所有频道直接显示名称，第九台固定为"郑州教育台"，无特殊标记
             nameSpan.textContent = ch.name;
 
             li.appendChild(iconSpan);
             li.appendChild(nameSpan);
 
-            // 单击切换频道 (所有频道一视同仁，无自定义判断)
             li.addEventListener('click', (e) => {
                 e.preventDefault();
                 const index = parseInt(li.getAttribute('data-index'), 10);
                 switchChannel(index);
             });
 
-            // 键盘支持 (Enter/Space)
             li.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
@@ -676,23 +697,33 @@
         }
     }
 
-    // 切换频道核心逻辑 (所有频道均有url，但保留空值防御)
+    // 切换频道核心逻辑 (第1个频道为local.mp4)
     function switchChannel(newIndex) {
         if (newIndex < 0 || newIndex >= channels.length) return;
         const targetChannel = channels[newIndex];
+        const prevIndex = activeIndex;
 
-        // 更新激活索引
-        activeIndex = newIndex;
-        retryCount = 0;
+        // 特殊处理localMP4标记的频道
+        if (targetChannel.localMP4) {
+            // 直接播放固定MP4文件，使用targetChannel.url (已设为 './local.mp4')
+            let videoUrl = targetChannel.url;
+            if (!videoUrl) {
+                // 保底，实际不会发生
+                videoUrl = './local.mp4';
+            }
+            activeIndex = newIndex;
+            setActiveChannelClass(activeIndex);
+            retryCount = 0;
+            updateStatusText(`🔄 加载本地视频...`, '⏳ 从服务器加载');
+            player.src({ type: 'video/mp4', src: videoUrl });
+            player.load();
+            player.play().catch(() => {
+                liveHintEl.innerText = '▶️ 请点击播放按钮';
+            });
+            return;  // 结束，不执行后续普通频道逻辑
+        }
 
-        // 更新所有项的active类
-        const allItems = document.querySelectorAll('.channel-item');
-        allItems.forEach((item, i) => {
-            if (i === activeIndex) item.classList.add('active');
-            else item.classList.remove('active');
-        });
-
-        // 防御：如果某个频道意外没有URL（理论上不会），给出提示
+        // 普通频道（有URL的m3u8流）
         if (!targetChannel.url) {
             player.pause();
             player.src(''); // 清空视频源
@@ -700,7 +731,10 @@
             return;
         }
 
-        // 正常播放
+        // 正常播放直播流
+        activeIndex = newIndex;
+        setActiveChannelClass(activeIndex);
+        retryCount = 0;
         updateStatusText(`🔄 切换至 ${targetChannel.name} ...`, '⏳ 加载中');
         player.src({ type: 'application/x-mpegURL', src: targetChannel.url });
         player.load();
@@ -721,9 +755,9 @@
 
     // 默认激活第一个频道并播放
     activeIndex = 0;
-    document.querySelectorAll('.channel-item')[0]?.classList.add('active');
+    setActiveChannelClass(0);
     updateStatusText(`📡 正在播放：${channels[0].name}`, '🎬 初始加载');
-    switchChannel(0);  // 通过switchChannel统一播放第一项
+    switchChannel(0);
 
     // 自动播放被阻止提示
     setTimeout(() => {
