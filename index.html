@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -478,11 +477,12 @@
     <!-- 播放器 + 右侧列表 (grid布局强制并排) -->
     <div class="player-row">
         <div class="player-area">
+            <!-- 修改点：将 poster 设置为同目录下的 ndm.jpeg 作为默认背景 -->
             <video id="myVideo" class="video-js vjs-big-play-centered" controls preload="auto"
                    playsinline webkit-playsinline x5-playsinline
                    crossorigin="anonymous"
                    width="1280" height="720"
-                   poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1280' height='720' viewBox='0 0 1280 720'%3E%3Crect width='1280' height='720' fill='%23000'/%3E%3C/svg%3E">
+                   poster="ndm.jpeg">
                 <source src="http://192.168.110.88:8088/livelan/stream.m3u8" type="application/x-mpegURL">
                 <p class="vjs-no-js">您的浏览器不支持视频播放，请升级或更换浏览器。</p>
             </video>
@@ -556,11 +556,12 @@
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 <script>
 (function() {
-    // ----- 频道列表：本地MP4放在第一位，其余9个依次后移 -----
+    // ----- 频道列表：本地MP4放在第一位，其余9个依次后移 周末影院示例 http://192.168.6.200:8088/livelan/stream.m3u8-----
     const channels = [
         // 第一位：局域网MP4点播，固定加载同目录下的 local.mp4
-        { name: '📁 校园本地视频 (local.mp4)', url: './local.mp4', localMP4: true },
+        { name: '📁 校园本地视频1 (local.mp4)', url: './local.mp4', localMP4: true },
         // 原9个频道依次往下排
+        { name: '📁 校园本地视频2  (HLS)', url: './m3u8/shgr.m3u8' },
         { name: '杨庄高中《周末影院》', url: 'http://192.168.6.200:8088/livelan/stream.m3u8' },
         { name: '郑州教育台', url: 'http://livezzutv.chinamcache.com/zb02/zb02.m3u8' },
         { name: '平舆综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11723-1.m3u8' },
@@ -569,7 +570,7 @@
         { name: '泌阳新闻综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11726-1.m3u8' },
         { name: '遂平一套', url: 'http://tvpull.dxhmt.cn:9081/tv/11728-1.m3u8' },
         { name: '新蔡综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11729-1.m3u8' },
-        { name: '上蔡综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11722-1.m3u8' }
+        { name: '上蔡综合', url: 'http://tvpull.dxhmt.cn:9081/tv/11722-1.m3u8' },      
     ];
 
     let activeIndex = 0;
@@ -848,6 +849,21 @@
     updateDateTime();
     setInterval(updateDateTime, 1000);
 })();
+</script>
+
+<!-- 右下角浮动图片弹窗（已移至右上角） -->
+<div id="floatPopup" style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); overflow: hidden; max-width: 260px;">
+    <div style="position: relative;">
+        <button id="closePopup" style="position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 18px; cursor: pointer; line-height: 1; display: flex; align-items: center; justify-content: center; z-index: 1001;">✕</button>
+        <img src="sph.jpg" alt="扫码关注" style="display: block; width: 100%; height: auto;">
+    </div>
+</div>
+
+<script>
+    // 关闭弹窗功能
+    document.getElementById('closePopup').addEventListener('click', function() {
+        document.getElementById('floatPopup').style.display = 'none';
+    });
 </script>
 </body>
 </html>
